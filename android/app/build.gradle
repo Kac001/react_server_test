@@ -63,10 +63,10 @@ def releaseStorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
 def releaseKeyAlias = System.getenv("ANDROID_KEY_ALIAS")
 def releaseKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")
 def hasReleaseSigning =
-        releaseStoreFile != null &&
-        releaseStorePassword != null &&
-        releaseKeyAlias != null &&
-        releaseKeyPassword != null
+        releaseStoreFile != null && !releaseStoreFile.trim().isEmpty() &&
+        releaseStorePassword != null && !releaseStorePassword.trim().isEmpty() &&
+        releaseKeyAlias != null && !releaseKeyAlias.trim().isEmpty() &&
+        releaseKeyPassword != null && !releaseKeyPassword.trim().isEmpty()
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
