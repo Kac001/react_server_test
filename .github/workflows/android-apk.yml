@@ -35,5 +35,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Decode Android keystore
-        if: ${{ env.ANDROID
+      - name: Decode Android keystore if provided
+        shell: bash
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/release.keystore
+          fi
+
+      - name: Build release APK
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_FILE: app/release.keystore
+        run: ./gradlew assembleRelease
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
