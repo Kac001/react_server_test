@@ -53,33 +53,9 @@ Make sure [AndroidManifest.xml](D:\Devcode\react_test\react_server_test\android\
 
 ## Cloud Build APK
 
-This project now includes a GitHub Actions workflow at
-[android-apk.yml](D:\Devcode\react_test\react_server_test\.github\workflows\android-apk.yml).
+This repository is ready for cloud APK build integration, but the GitHub Actions workflow
+file is not included in the pushed version yet because the current GitHub token does not have
+permission to create workflow files.
 
-After pushing the project to GitHub, you can build an APK in the cloud:
-
-1. Push the repository to GitHub.
-2. Open the repository Actions tab.
-3. Run `Build Android APK`, or push to `main` or `master`.
-4. Download the generated artifact named `app-release-apk`.
-
-### Optional release signing
-
-If you add these GitHub Actions secrets, the workflow will produce a properly release-signed APK:
-
-- `ANDROID_KEYSTORE_BASE64`
-- `ANDROID_KEYSTORE_PASSWORD`
-- `ANDROID_KEY_ALIAS`
-- `ANDROID_KEY_PASSWORD`
-
-If you do not add them, the workflow still builds an APK by falling back to the debug keystore.
-
-### Create a keystore
-
-You can create one later with:
-
-```bash
-keytool -genkeypair -v -storetype PKCS12 -keystore release.keystore -alias release -keyalg RSA -keysize 2048 -validity 10000
-```
-
-Then convert the keystore file to base64 and save it as the `ANDROID_KEYSTORE_BASE64` GitHub secret.
+You can add a workflow later after pushing the repository with a token that includes
+the `workflow` permission.
