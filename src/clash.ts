@@ -30,11 +30,20 @@ function normalizeProxy(input: unknown): ClashProxy | null {
 }
 
 export async function fetchClashConfigText(url: string): Promise<string> {
-  const response = await fetch(url, {
-    headers: {
-      Accept: 'text/plain, application/x-yaml, text/yaml, */*',
-    },
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(url, {
+      headers: {
+        Accept: 'text/plain, application/x-yaml, text/yaml, */*',
+      },
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown network error';
+    throw new Error(
+      `Request failed before receiving a response. If you are using an http:// URL on Android, make sure cleartext HTTP is allowed. Original error: ${message}`,
+    );
+  }
 
   if (!response.ok) {
     throw new Error(`Failed to download config: HTTP ${response.status}`);
