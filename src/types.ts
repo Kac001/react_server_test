@@ -16,6 +16,9 @@ export type TcpPingResult = {
   port: number;
   type?: string;
   latencyMs?: number;
+  attempts?: number;
+  timeoutMs?: number;
+  remoteFamily?: string;
   success: boolean;
   error?: string;
 };

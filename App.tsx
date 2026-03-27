@@ -17,6 +17,8 @@ import {runLimitedTcpPings} from './src/tcpPing';
 import type {ClashProxy, TcpPingResult} from './src/types';
 
 const DEFAULT_URL = 'https://example.com/clash.yaml';
+const DEFAULT_PING_TIMEOUT_MS = 8000;
+const DEFAULT_PING_CONCURRENCY = 2;
 
 function App(): React.JSX.Element {
   const [configUrl, setConfigUrl] = useState(DEFAULT_URL);
@@ -67,7 +69,11 @@ function App(): React.JSX.Element {
     setResults([]);
 
     try {
-      const pingResults = await runLimitedTcpPings(proxies, 5, 4000);
+      const pingResults = await runLimitedTcpPings(
+        proxies,
+        DEFAULT_PING_CONCURRENCY,
+        DEFAULT_PING_TIMEOUT_MS,
+      );
       setResults(pingResults);
     } catch (error) {
       Alert.alert('TCP test failed', error instanceof Error ? error.message : 'Unknown error');
@@ -115,7 +121,8 @@ function App(): React.JSX.Element {
           <Text style={styles.summaryTitle}>Summary</Text>
           <Text style={styles.summaryText}>{summary}</Text>
           <Text style={styles.summaryHint}>
-            This measures TCP connect latency, not ICMP ping.
+            This measures TCP connect latency, not ICMP ping. Mobile defaults use {DEFAULT_PING_CONCURRENCY}
+            parallel probes, {DEFAULT_PING_TIMEOUT_MS}ms timeout, and one retry for timeouts.
           </Text>
         </View>
 
@@ -154,8 +161,13 @@ function App(): React.JSX.Element {
                 {item.server}:{item.port} {item.type ? `| ${item.type}` : ''}
               </Text>
               <Text style={styles.resultLatency}>
-                {item.success ? `${item.latencyMs} ms` : item.error ?? 'Connection failed'}
+                {item.success
+                  ? `${item.latencyMs} ms${item.attempts && item.attempts > 1 ? ` (${item.attempts} tries)` : ''}`
+                  : item.error ?? 'Connection failed'}
               </Text>
+              {item.remoteFamily ? (
+                <Text style={styles.resultMeta}>family: {item.remoteFamily}</Text>
+              ) : null}
             </View>
           )}
         />
