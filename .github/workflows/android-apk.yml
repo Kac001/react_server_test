@@ -7,6 +7,12 @@ on:
       - main
       - master
 
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-apk:
     runs-on: ubuntu-latest
@@ -41,6 +47,9 @@ jobs:
           if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
             echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/release.keystore
           fi
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
 
       - name: Build release APK
         working-directory: android
